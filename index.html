@@ -135,11 +135,11 @@
       
       // Initialize build configuration
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/" + "Car Configurator.loader.js";
+      var loaderUrl = buildUrl + "/" + "Car Configurator v2.loader.js";
       // Initialize config object
       var config = {
-        dataUrl: buildUrl + "/" + "Car Configurator.data",
-        frameworkUrl: buildUrl + "/" + "Car Configurator.framework.js",
+        dataUrl: buildUrl + "/" + "Car Configurator v2.data",
+        frameworkUrl: buildUrl + "/" + "Car Configurator v2.framework.js",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "Abhishek",
         productName: "Car Configurator",
@@ -149,7 +149,7 @@
       
       // Add conditional properties
       /* @if USE_WASM */
-      config.codeUrl = buildUrl + "/" + "Car Configurator.wasm";
+      config.codeUrl = buildUrl + "/" + "Car Configurator v2.wasm";
       /* @endif */
       
       /* @if MEMORY_FILENAME */
