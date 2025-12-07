@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Car Configurator</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  </head>
+  <body>
+    <div id="unity-container" class="unity-desktop">
+      <canvas id="unity-canvas"></canvas>
+      <button id="unity-fullscreen-button" title="Toggle Fullscreen">⛶</button>
+      <div id="unity-loading-content">
+        <!-- Logo element (can be replaced with your logo) -->
+        <div id="unity-logo">
+          <img src="TemplateData/logo.png" alt="Game Logo" style="width: 100%; max-width: 300px;">
+        </div>
+        <!-- Loading bar -->
+        <div id="unity-loading-bar">
+          <div id="unity-progress-bar-empty">
+            <div id="unity-progress-bar-full"></div>
+          </div>
+          <div id="unity-progress-text">Loading... 0%</div>
+        </div>
+      </div>
+      <!-- <div id="unity-warning"></div> -->
+    </div>
+    <script>
+      // Get DOM elements
+      var container = document.getElementById("unity-container");
+      var canvas = document.getElementById("unity-canvas");
+      var loadingContent = document.getElementById("unity-loading-content");
+      var loadingBar = document.getElementById("unity-loading-bar");
+      var progressBarFull = document.getElementById("unity-progress-bar-full");
+      var progressText = document.getElementById("unity-progress-text");
+      var logo = document.getElementById("unity-logo");
+      var fullscreenButton = document.getElementById("unity-fullscreen-button");
+      var warningBanner = document.getElementById("unity-warning");
+      
+      // Show loading content initially
+      if (loadingContent) loadingContent.style.display = "flex";
+      if (loadingBar) loadingBar.style.display = "block";
+      if (logo) logo.style.display = "block";
+      
+      // Check if fullscreen is active
+      function isFullscreen() {
+        return !!(document.fullscreenElement || 
+                document.webkitFullscreenElement || 
+                document.mozFullScreenElement ||
+                document.msFullscreenElement);
+      }
+      
+      // Removed rebuildFullscreenGUI function as we're using SVG icons now
+      
+      // Show banner messages
+      function unityShowBanner(msg, type) {
+        if (!warningBanner) return;
+        
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length > 0 ? 'block' : 'none';
+        }
+        
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        
+        if (type === 'error') {
+          div.style.cssText = 'background: red; padding: 10px;';
+        } else if (type === 'warning') {
+          div.style.cssText = 'background: yellow; padding: 10px; color: black;';
+        }
+        
+        warningBanner.appendChild(div);
+        
+        // Auto-hide non-error messages after 5 seconds
+        if (type !== 'error') {
+          setTimeout(function() {
+            if (warningBanner.contains(div)) {
+              warningBanner.removeChild(div);
+              updateBannerVisibility();
+            }
+          }, 5000);
+        }
+        
+        updateBannerVisibility();
+      }
+      
+      // Toggle fullscreen mode
+      function toggleFullscreen() {
+        try {
+          var element = container || document.documentElement;
+          
+          if (isFullscreen()) {
+            // Exit fullscreen
+            if (document.exitFullscreen) {
+              document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) { // Firefox
+              document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) { // Chrome, Safari and Opera
+              document.webkitExitFullscreen();
+            } else if (document.webkitCancelFullScreen) { // Old WebKit
+              document.webkitCancelFullScreen();
+            } else if (document.msExitFullscreen) { // IE/Edge
+              document.msExitFullscreen();
+            }
+          } else {
+            // Enter fullscreen
+            if (element.requestFullscreen) {
+              element.requestFullscreen();
+            } else if (element.mozRequestFullScreen) { // Firefox
+              element.mozRequestFullScreen();
+            } else if (element.webkitRequestFullscreen) { // Chrome, Safari and Opera
+              element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+            } else if (element.webkitRequestFullScreen) { // Old WebKit
+              element.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+            } else if (element.msRequestFullscreen) { // IE/Edge
+              element.msRequestFullscreen();
+            }
+          }
+        } catch (e) {
+          console.error('Fullscreen error:', e);
+          unityShowBanner('Full screen mode is not available', 'warning');
+        }
+      }
+
+      // Confirm before closing the page
+      function confirmUnload(event) {
+        var message = "All unsaved progress will be lost.";
+        if (event) {
+          event.returnValue = message;
+        }
+        return message;
+      }
+      
+      // Initialize build configuration
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/" + "746dfe9c2590ab5ad3c7413f7aed5c21.loader.js";
+      // Initialize config object
+      var config = {
+        dataUrl: buildUrl + "/" + "98b58230eed30be4967d5effecd3fe07.data",
+        frameworkUrl: buildUrl + "/" + "df6aaedbadb856ab2cc95593f67a5280.framework.js",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "Abhishek",
+        productName: "Car Configurator",
+        productVersion: "0.1",
+        showBanner: unityShowBanner
+      };
+      
+      // Add conditional properties
+      /* @if USE_WASM */
+      config.codeUrl = buildUrl + "/" + "47cc5232146be4999771b347778c7d76.wasm";
+      /* @endif */
+      
+      /* @if MEMORY_FILENAME */
+      config.memoryUrl = buildUrl + "/" + "";
+      /* @endif */
+      
+      /* @if SYMBOLS_FILENAME */
+      config.symbolsUrl = buildUrl + "/" + "";
+      /* @endif */
+      
+      // Handle mobile devices
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Configure viewport for mobile
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.head.appendChild(meta);
+        
+        if (container) container.className = "unity-mobile";
+        
+        // Optional: Uncomment to lower resolution on mobile for better performance
+        // config.devicePixelRatio = 1;
+        
+        // Show warning for mobile users
+        unityShowBanner('For best experience, please use a desktop browser.');
+      }
+      
+      // Set background image if specified
+      /* @if BACKGROUND_FILENAME */
+      if (canvas) {
+        canvas.style.background = "url('" + buildUrl + "/" + "') center / cover";
+      }
+      /* @endif */
+      
+      // Load and initialize the Unity game
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = function() {
+        if (typeof createUnityInstance !== 'function') {
+          unityShowBanner('Failed to load game. Please try refreshing the page.', 'error');
+          return;
+        }
+        
+        createUnityInstance(canvas, config, function(progress) {
+          // Update progress bar
+          var progressPercent = Math.round(progress * 100);
+          
+          if (progressBarFull) {
+            progressBarFull.style.width = progressPercent + "%";
+          }
+          
+          // Update progress text with different messages based on progress
+          if (progressText) {
+            var message;
+            if (progress < 0.3) {
+              message = 'Loading assets... ';
+            } else if (progress < 0.7) {
+              message = 'Almost there... ';
+            } else {
+              message = 'Finalizing... ';
+            }
+            progressText.textContent = message + progressPercent + '%';
+          }
+        }).then(function(unityInstance) {
+          // Hide loading screen when game is loaded
+          if (loadingContent) loadingContent.style.display = 'none';
+          
+          // Optional: Uncomment to show confirmation when leaving the page
+          // window.addEventListener('beforeunload', confirmUnload);
+          
+        }).catch(function(message) {
+          unityShowBanner('Failed to initialize game: ' + message, 'error');
+          console.error('Unity initialization failed:', message);
+        });
+      };
+      
+      script.onerror = function() {
+        unityShowBanner('Failed to load game files. Please check your internet connection.', 'error');
+      };
+      
+      document.body.appendChild(script);
+      
+      // Initialize fullscreen button with a single instance
+      if (fullscreenButton) {
+        // Remove any existing click handlers to prevent duplicates
+        fullscreenButton.replaceWith(fullscreenButton.cloneNode(true));
+        fullscreenButton = document.getElementById('unity-fullscreen-button');
+        
+        // Add click handler
+        fullscreenButton.onclick = function(e) {
+          e.preventDefault();
+          toggleFullscreen();
+          this.blur();
+          return false;
+        };
+        
+        // Add keyboard support
+        fullscreenButton.onkeydown = function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleFullscreen();
+            return false;
+          }
+        };
+        
+       // Handle fullscreen change events
+       document.addEventListener('fullscreenchange', function() {
+          fullscreenButton.textContent = isFullscreen() ? '⤢' : '⛶';
+        });
+        
+        // Handle errors
+        document.addEventListener('fullscreenerror', function() {
+          unityShowBanner('Fullscreen mode not available', 'warning');
+        });
+      }
+    </script>
+  </body>
+</html>
