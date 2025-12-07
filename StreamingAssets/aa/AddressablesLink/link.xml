@@ -13,11 +13,10 @@
     <type fullname="VLB.VolumetricLightBeamSD" preserve="all" />
     <type fullname="WheelController" preserve="all" />
     <type fullname="WheelData" preserve="all" />
-    <type fullname="CarData/CarSpecifications" preserve="nothing" serialized="true" />
     <type fullname="DoorConfig" preserve="nothing" serialized="true" />
     <type fullname="LightGroup" preserve="nothing" serialized="true" />
-    <type fullname="MaterialProperties" preserve="nothing" serialized="true" />
     <type fullname="WheelController/WheelContainer" preserve="nothing" serialized="true" />
+    <type fullname="MaterialProperties" preserve="nothing" serialized="true" />
   </assembly>
   <assembly fullname="Unity.Addressables, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" preserve="all">
     <type fullname="UnityEngine.AddressableAssets.Addressables" preserve="all" />
