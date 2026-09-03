@@ -90,13 +90,6 @@ Vehicle interactions are handled through reusable scripts for components such as
 * Exterior/interior transitions
 * Vehicle customization
 
-## 📋 Requirements
-
-* **Unity 6** or compatible Unity version
-* **Universal Render Pipeline (URP)**
-* **Addressables**
-* **WebGL Build Support**
-
 ## 🚀 Project Highlights
 
 This project demonstrates practical experience with:
