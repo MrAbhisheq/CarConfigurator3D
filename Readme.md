@@ -113,13 +113,13 @@ This project demonstrates practical experience with:
 * Performance-conscious web applications
 
 ## 📸 Screenshots
-[Screenshot1](Screenshots/CarConfigurator3D_1.png)
-[Screenshot2](Screenshots/CarConfigurator3D_2.png)
-[Screenshot3](Screenshots/CarConfigurator3D_3.png)
-[Screenshot4](Screenshots/CarConfigurator3D_4.png)
-[Screenshot5](Screenshots/CarConfigurator3D_5.png)
-[Screenshot6](Screenshots/CarConfigurator3D_6.png)
-[Screenshot7](Screenshots/CarConfigurator3D_7.png)
+![Screenshot1](Screenshots/CarConfigurator3D_1.png)
+![Screenshot2](Screenshots/CarConfigurator3D_2.png)
+![Screenshot3](Screenshots/CarConfigurator3D_3.png)
+![Screenshot4](Screenshots/CarConfigurator3D_4.png)
+![Screenshot5](Screenshots/CarConfigurator3D_5.png)
+![Screenshot6](Screenshots/CarConfigurator3D_6.png)
+![Screenshot7](Screenshots/CarConfigurator3D_7.png)
 
 ## 🌐 WebGL Demo
 
